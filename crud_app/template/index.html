@@ -70,6 +70,7 @@
 
 </head>
 <body>
+  {% include 'alert.html' %}
   <!-- <button class="button" id="form-open">Login</button> -->
   <section class="home">
     <div class="form_container">
@@ -82,19 +83,19 @@
           <h2>Insert Student Data</h2>
 
           <div class="input_box">
-            <input type="text" name="std_name" placeholder="Enter your name" required />
+            <input type="text" name="std_name"  placeholder="Enter your name" required />
             <!-- <i class="uil uil-envelope-alt email"></i> -->
           </div>
           <div class="input_box">
-            <input type="text" name="dept" placeholder="Enter your Department" required />
+            <input type="text" name="dept"  placeholder="Enter your Department" required />
             <!-- <i class="uil uil-envelope-alt email"></i> -->
           </div>
           <div class="input_box">
-            <input type="text" name="section" placeholder="Enter your Section" required />
+            <input type="text" name="section"  placeholder="Enter your Section" required />
             <!-- <i class="uil uil-envelope-alt email"></i> -->
           </div>
           <div class="input_box">
-            <input type="text" name="subject" placeholder="Enter your Subject" required />
+            <input type="text" name="subject"  placeholder="Enter your Subject" required />
             <!-- <i class="uil uil-lock password"></i> -->
             <!-- <i class="uil uil-eye-slash pw_hide"></i> -->
           </div>
@@ -103,34 +104,52 @@
         </form>
       </div>
 
-      <!-- Signup From -->
-      <div class="form signup_form">
-        <form action="#">
-          <h2>Signup</h2>
-
-          <div class="input_box">
-            <input type="email" placeholder="Enter your email" required />
-            <i class="uil uil-envelope-alt email"></i>
-          </div>
-          <div class="input_box">
-            <input type="password" placeholder="Create password" required />
-            <i class="uil uil-lock password"></i>
-            <i class="uil uil-eye-slash pw_hide"></i>
-          </div>
-          <div class="input_box">
-            <input type="password" placeholder="Confirm password" required />
-            <i class="uil uil-lock password"></i>
-            <i class="uil uil-eye-slash pw_hide"></i>
-          </div>
-
-          <button class="button">Signup Now</button>
-
-          <div class="login_signup">Already have an account? <a href="#" id="login">Login</a></div>
-        </form>
-      </div>
     </div>
   </section>
 
+{% if label %}
+  <section class="home
+    
+    {% if label %}
+      show
+    {% endif %}
+      
+  ">
+
+    <div class="form_container">
+      <i class="uil uil-times form_close"></i>
+      <!-- Login From -->
+      <div class="form login_form">
+
+        <form action="{% url 'updateStd' obj.id %}" method="post">
+          {% csrf_token %}
+          <h2>Update Student Data</h2>
+
+          <div class="input_box">
+            <input type="text" name="std_name" value="{{obj.name}}" placeholder="Enter your name" required />
+            <!-- <i class="uil uil-envelope-alt email"></i> -->
+          </div>
+          <div class="input_box">
+            <input type="text" name="dept" value="{{obj.department}}" placeholder="Enter your Department" required />
+            <!-- <i class="uil uil-envelope-alt email"></i> -->
+          </div>
+          <div class="input_box">
+            <input type="text" name="section" value="{{obj.section}}" placeholder="Enter your Section" required />
+            <!-- <i class="uil uil-envelope-alt email"></i> -->
+          </div>
+          <div class="input_box">
+            <input type="text" name="subject" value="{{obj.subject}}" placeholder="Enter your Subject" required />
+            <!-- <i class="uil uil-lock password"></i> -->
+            <!-- <i class="uil uil-eye-slash pw_hide"></i> -->
+          </div>
+
+          <button type="submit" class="button">Submit</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+{% endif %}
 <div class="wrapper">
   <!--   Creative Tim Branding   -->
 
@@ -141,7 +160,7 @@
           <h2>Advance Django Crud Application</h2>
         </div>
 
-        <div class="fresh-table full-color-orange">
+        <div class="fresh-table full-color-red">
         <!--
           Available colors for the full background: full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange
           Available colors only for the toolbar: toolbar-color-blue, toolbar-color-azure, toolbar-color-green, toolbar-color-red, toolbar-color-orange
@@ -157,7 +176,6 @@
               <th data-field="salary" data-sortable="true">Department</th>
               <th data-field="country" data-sortable="true">Section</th>
               <th data-field="city">Subject</th>
-              <!-- <th data-field="actions" data-formatter="operateFormatter" data-events="operateEvents">Actions</th> -->
               <th data-field="actions">Actions</th>
             </thead>
             <tbody>
@@ -169,8 +187,8 @@
                 <td>{{Student.section}}</td>
                 <td>{{Student.subject}}</td>
                 <td>
-                  <a href="#"><i class="uil uil-edit"></i></a>
-                  <a href="#"><i class="uil uil-trash-alt"></i></a>
+                  <a href="{% url 'updateStd' Student.id %}"><i class="uil uil-edit"></i></a>
+                  <a href="{% url 'deleteStd' Student.id %}"><i class="uil uil-trash-alt"></i></a>
                 </td>
               </tr>
               {% endfor %}
