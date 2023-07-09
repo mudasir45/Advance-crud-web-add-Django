@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!-- Coding by CodingLab || www.codinglabweb.com -->
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convert into Cipher</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+
+        .alert-close {
+            float: right;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1;
+            color: inherit;
+            text-shadow: none;
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="{% url 'index' %}" class="nav_logo">C.W.T7</a>
+
+            <ul class="nav_items">
+                <li class="nav_item">
+                    <a href="{% url 'index' %}" class="nav_link">Home</a>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'EncryptText' %}" class="nav_link">Product</a>
+                    {% else %}
+                    <a class="nav_link" id="form-open">Product</a>
+                    {% endif %}
+                    <a href="{% url 'UserSavedCiphers' %}" class="nav_link">Saved Cipher</a>
+                    <a href="#" class="nav_link">Contact</a>
+                </li>
+            </ul>
+
+            <button class="button" id="form-open">Login</button>
+
+        </nav>
+    </header>
+
+    <!-- Home -->
+    <section class="home">
+        <div class="form_container">
+            <i class="uil uil-times form_close"></i>
+            <!-- Login From -->
+            <div class="form login_form">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+                    <h2>Login</h2>
+
+                    <div id="login-alert" class="alert" style="display: none;">
+                        <span class="alert-close" onclick="this.parentElement.style.display='none';">&times;</span>
+
+                    </div>
+                    <div class="input_box">
+                        <input type="text" id="login-username" name="username" placeholder="Enter Username" required />
+                        <i class="uil uil-envelope-alt email"></i>
+                    </div>
+                    <div class="input_box">
+                        <input type="password" id="login-pass" name="password" placeholder="Enter your password"
+                            required />
+                        <i class="uil uil-lock password"></i>
+                        <i class="uil uil-eye-slash pw_hide"></i>
+                    </div>
+
+                    <div class="option_field">
+                        <span class="checkbox">
+                            <input type="checkbox" id="check" />
+                            <label for="check">Remember me</label>
+                        </span>
+                        <a href="#" class="forgot_pw">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="button">Login Now</button>
+
+                    <div class="login_signup">Don't have an account? <a href="#" id="signup">Signup</a></div>
+                </form>
+            </div>
+
+            <!-- Signup From -->
+            <div class="form signup_form">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <h2>Signup</h2>
+
+                    <div id="singup-alert" class="alert alert-success" style="display: none;">
+                        <span class="alert-close" onclick="this.parentElement.style.display='none';">&times;</span>
+
+                    </div>
+
+                    {% include 'alert.html' %}
+                    <div class="input_box">
+                        <input type="email" id="singup-email" name="email" placeholder="Enter your email" required />
+                        <i class="uil uil-envelope-alt email"></i>
+                    </div>
+                    <div class="input_box">
+                        <input type="text" id="singup-username" name="username" placeholder="Enter Username" required />
+                        <i class="uil uil-envelope-alt email"></i>
+                    </div>
+                    <div class="input_box">
+                        <input type="password" id="singup-pass" name="pass" placeholder="Create password" required />
+                        <i class="uil uil-lock password"></i>
+                        <i class="uil uil-eye-slash pw_hide"></i>
+                    </div>
+                    <div class="input_box">
+                        <input type="password" id="singup-pass1" name="pass1" placeholder="Confirm password" required />
+                        <i class="uil uil-lock password"></i>
+                        <i class="uil uil-eye-slash pw_hide"></i>
+                    </div>
+
+                    <button class="button">Signup Now</button>
+
+                    <div class="login_signup">Already have an account? <a href="#" id="login">Login</a></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="{% static 'script.js' %}"></script>
+    <script>
+
+        $(document).ready(function () {
+            function userIsAuthenticated() {
+                return '{{ user.is_authenticated }}' === 'True';
+            }
+
+            $('.login_form form').submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get the form data
+                var username = $(`#login-username`).val();
+                var password = $(`#login-pass`).val();
+
+                // Create the data object to send in the AJAX request
+                var data = {
+                    username: username,
+                    password: password
+                };
+                console.log(data)
+
+
+                // Get the CSRF token
+                var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+                // Set the CSRF token in the AJAX request headers
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                });
+
+                // Send the AJAX request
+                $.ajax({
+                    url: '/user_login/', // Replace with your server endpoint for login
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        // Handle the response from the server
+                        console.log(response.message);
+                        var loginAlert = $("#login-alert");
+                        if (response.message === "Login successfull") {
+                            loginAlert.removeClass('alert-error')
+                            loginAlert.addClass('alert-success')
+                            loginAlert.hide().text(response.message).show();
+                            window.location.href = "{% url 'EncryptText' %}";
+                        }
+                        else {
+                            loginAlert.addClass('alert-error')
+                            loginAlert.hide().text(response.message).show();
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error if any
+                        console.error(error);
+                    }
+                });
+            });
+
+            // Signup form submission using Ajax
+            $('.signup_form form').submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get the form data
+                var email = $(`#singup-email`).val();
+                var username = $(`#singup-username`).val();
+                var password = $(`#singup-pass`).val();
+                var password2 = $(`#singup-pass1`).val();
+
+                // Create the data object to send in the AJAX request
+                var data = {
+                    email: email,
+                    username: username,
+                    pass: password
+                };
+                console.log(data)
+
+                // Get the CSRF token
+                var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+                // Set the CSRF token in the AJAX request headers
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                });
+
+                // Send the AJAX request
+                $.ajax({
+                    url: '/userSignUp/', // Replace with your server endpoint for login
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        // Handle the response from the server
+                        console.log(response.message)
+                        var loginAlert = $("#singup-alert");
+                        loginAlert.hide().text(response.message).show();
+                        loginAlert.addClass('alert-success')
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error if any
+                        console.error(error);
+
+                    }
+                });
+            });
+        });
+
+
+
+    </script>
+</body>
+
+</html>
