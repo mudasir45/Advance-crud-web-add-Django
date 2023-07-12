@@ -30,6 +30,7 @@ def insert(request):
         return redirect('/')
     return render(request, 'form.html')
 
+
 def deleteStd(request, id):
     try:   
         std_obj = student.objects.get(id = id)
