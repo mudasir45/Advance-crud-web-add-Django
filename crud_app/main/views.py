@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import student
 
 
+
 def index(request):
     Students = student.objects.all()
     context = {
